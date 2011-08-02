@@ -76,7 +76,12 @@ class Tourist
   # Returns list of tours this tourist knows about. (Meant to be run on a subclass
   # instance; returns the list of tours available).
   def tours
-    methods.grep(/^tour_/).map {|m| m.sub(/^tour_/,'')}
+    # running in mri 1.9.2p180 without the ".to_s" errors wtih 
+    #   tourbus-2.0.1/lib/tourist.rb:79:in `block in tours': 
+    #   undefined method `sub' for :tour_N:Symbol (NoMethodError)
+    # The method names are symbols, so we need .to_s
+    # before we can .sub them.
+    methods.grep(/^tour_/).map {|m| m.to_s.sub(/^tour_/,'')}
   end
   
   def run_tour(tour_name)
